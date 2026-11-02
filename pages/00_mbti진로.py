@@ -1,20 +1,20 @@
-//import streamlit as st
+import streamlit as st
 
-# 페이지 기본 설정
+# 1. 페이지 기본 설정
 st.set_page_config(
     page_title="✨ MBTI 기반 맞춤 진로 탐색기",
     page_icon="🎨",
     layout="centered"
 )
 
-# MBTI 및 진로 데이터베이스 (기본 데이터)
+# 2. MBTI 및 진로 데이터베이스 (기본 라이브러리 dict 구조)
 mbti_careers = {
     "INTJ": [
         {
             "name": "💻 AI 연구원 / 데이터 과학자",
             "department": "컴퓨터공학과, 인공지능학과, 통계학과",
             "personality": "논리적이고 치밀하며 독립적인 문제 해결을 즐기는 성격",
-            "salary": "약 5,500만 원 ~ 8,000만 원 이상 (경력에 따라 상승 🚀)"
+            "salary": "약 5,500만 원 ~ 8,000만 원 이상 🚀"
         },
         {
             "name": "📊 경영 전략 컨설턴트",
@@ -76,7 +76,7 @@ mbti_careers = {
             "name": "✍️ 작가 / 콘텐트 에디터",
             "department": "국어국문학과, 문예창작과, 미디어학과",
             "personality": "상상력이 풍부하고 통찰력 있는 글을 써 내려가는 성격",
-            "salary": "약 3,000만 원 ~ 5,500만 원 (개인 역량에 따라 다름 📚)"
+            "salary": "약 3,000만 원 ~ 5,500만 원 📚"
         }
     ],
     "INFP": [
@@ -112,7 +112,7 @@ mbti_careers = {
             "name": "🎬 영상 크리에이터 / PD",
             "department": "신문방송학과, 미디어영상학과, 연극영화과",
             "personality": "에너지 넘치고 풍부한 열정으로 흥미로운 콘텐츠를 만드는 성격",
-            "salary": "약 3,500만 원 ~ 6,000만 원 이상 (프리랜서 차이 큼 📹)"
+            "salary": "약 3,500만 원 ~ 6,000만 원 이상 📹"
         },
         {
             "name": "🎉 이벤트·행사 기획자",
@@ -132,7 +132,7 @@ mbti_careers = {
             "name": "🏛️ 공무원 / 행정 전문가",
             "department": "행정학과, 법학과, 정책학과",
             "personality": "책임감이 강하고 안정적인 규칙 안에서 묵묵히 일하는 성격",
-            "salary": "약 3,000만 원 ~ 5,500만 원 (호봉제 적용 📜)"
+            "salary": "약 3,000만 원 ~ 5,500만 원 📜"
         }
     ],
     "ISFJ": [
@@ -196,7 +196,7 @@ mbti_careers = {
             "name": "🎵 음악가 / 사운드 디자이너",
             "department": "실용음악학과, 음향공학과",
             "personality": "감수성이 풍부하고 오감으로 예술을 느끼고 표현하는 성격",
-            "salary": "약 2,800만 원 ~ 5,000만 원 (활동 분야에 따라 다양 🎧)"
+            "salary": "약 2,800만 원 ~ 5,000만 원 🎧"
         },
         {
             "name": "🐶 수의사 / 반려동물 전문가",
@@ -224,7 +224,7 @@ mbti_careers = {
             "name": "🎭 배우 / 공연 기획자",
             "department": "연극영화과, 공연예술학과",
             "personality": "무대 체질이며 사람들에게 에너지를 주고 주목받는 것을 좋아하는 성격",
-            "salary": "약 3,000만 원 ~ 5,000만 원 (개인 역량 차이 큼 🌟)"
+            "salary": "약 3,000만 원 ~ 5,000만 원 🌟"
         },
         {
             "name": "🛍️ 패션 스타일리스트 / MD",
@@ -235,12 +235,12 @@ mbti_careers = {
     ]
 }
 
-# 헤더 부분 UI
+# 3. 메인 화면 구성
 st.title("✨ 내 MBTI에 딱 맞는 진로는? 🎯")
 st.write("안녕! 👋 너의 MBTI를 고르면 미래에 어떤 멋진 직업이 어울릴지 추천해 줄게! 🚀")
 st.markdown("---")
 
-# MBTI 선택 드롭다운
+# 4. MBTI 드롭다운 선택
 selected_mbti = st.selectbox(
     "👇 너의 MBTI 유형을 선택해봐!",
     options=list(mbti_careers.keys())
@@ -248,7 +248,7 @@ selected_mbti = st.selectbox(
 
 st.write("")
 
-# 결과 출력 button / interaction
+# 5. 결과 출력
 if selected_mbti:
     st.subheader(f"🎉 **{selected_mbti}** 유형에게 딱 맞는 추천 진로 2가지!")
     
