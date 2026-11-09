@@ -8,10 +8,10 @@ import streamlit as st
 st.set_page_config(page_title="국가별 MBTI 비율 시각화", layout="wide")
 
 
-# 데이터 로드
+# 데이터 로드 (pages 폴더의 상위 폴더에 있는 CSV 파일을 읽기 위해 "../" 추가)
 @st.cache_data
 def load_data():
-  return pd.read_csv("countriesMBTI_16types.csv")
+  return pd.read_csv("../countriesMBTI_16types.csv")
 
 
 df = load_data()
