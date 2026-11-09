@@ -1,3 +1,4 @@
+import os
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,10 +9,12 @@ import streamlit as st
 st.set_page_config(page_title="국가별 MBTI 비율 시각화", layout="wide")
 
 
-# 데이터 로드
+# 데이터 로드 (현재 파일 위치 기준으로 상위 폴더의 CSV 경로를 절대 경로로 안전하게 지정)
 @st.cache_data
 def load_data():
-  return pd.read_csv("countriesMBTI_16types.csv")
+  current_dir = os.path.dirname(os.path.abspath(__file__))
+  csv_path = os.path.join(current_dir, "..", "countriesMBTI_16types.csv")
+  return pd.read_csv(csv_path)
 
 
 df = load_data()
