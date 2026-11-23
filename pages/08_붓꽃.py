@@ -11,7 +11,24 @@ st.set_page_config(
 )
 
 st.title("🌸 붓꽃(Iris) 품종 예측 및 위치 시각화")
-st.write("사용자가 입력한 **꽃잎 길이**와 **꽃잎 너비**를 기반으로 **랜덤 포레스트(Random Forest)** 알고리즘을 통해 품종을 예측하고, 전체 데이터 분포 속에서 사용자의 입력 위치를 확인합니다.")
+st.write("사용자가 입력한 **꽃잎 길이**와 **꽃잎 너비**를 기반으로 머신러닝 모델이 품종을 예측하고, 전체 데이터 분포 속에서 사용자의 입력 위치를 확인합니다.")
+
+# 사용된 알고리즘 명시 및 쉬운 설명 섹션
+st.markdown("### 🤖 사용된 예측 알고리즘: **랜덤 포레스트 (Random Forest)**")
+with st.expander("💡 랜덤 포레스트 알고리즘은 어떻게 작동하나요? (알기 쉬운 설명 보기)", expanded=True):
+    st.markdown("""
+    **랜덤 포레스트(Random Forest)**는 쉽게 말해 **'100명의 붓꽃 전문가(의사결정나무)가 모여 다수결로 품종을 결정하는 방식'**입니다.
+    
+    1. **스무고개 질문지 만들기 (의사결정나무)**:
+       - 한 명의 전문가가 *"꽃잎 길이가 2.5cm보다 짧은가요? 네 → 그렇다면 Setosa입니다!"* 처럼 스무고개 질문을 던지며 품종을 찾아냅니다.
+    2. **100명의 전문가 모으기 (숲 구성)**:
+       - 한 사람의 판단은 실수할 수 있기 때문에, 조금씩 다른 기준과 질문을 가진 **100개의 의사결정나무(나무들이 모여 '숲'을 이룸)**를 만듭니다.
+    3. **다수결 투표로 최종 결정**:
+       - 사용자가 꽃잎 길이와 너비를 입력하면, 100명의 전문가가 각자 품종을 예측합니다.
+       - 예를 들어 95명이 `Setosa`, 5명이 `Versicolor`라고 답하면, 가장 많은 표를 받은 **`Setosa`를 최종 품종으로 결정**합니다. (아래 표의 '예측 확률'이 바로 이 투표 비율입니다!)
+    """)
+
+st.divider()
 
 # 2. 데이터 로드 및 모델 학습 (캐싱 활용)
 @st.cache_resource
@@ -23,7 +40,7 @@ def load_data_and_model():
     X = df[['꽃잎길이', '꽃잎너비']]
     y = df['품종']
     
-    # 분류 알고리즘: Random Forest 적용
+    # 분류 알고리즘: Random Forest 적용 (100개의 나무 사용)
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X, y)
     
@@ -64,59 +81,3 @@ petal_width = st.slider(
     value=mean_width,
     step=0.1
 )
-
-# 4. 예측 수행 및 결과 출력
-if st.button("품종 예측 및 위치 확인하기", type="primary"):
-    # 입력값 데이터프레임 변환
-    input_df = pd.DataFrame([[petal_length, petal_width]], columns=['꽃잎길이', '꽃잎너비'])
-    
-    # 예측 실행
-    prediction = model.predict(input_df)[0]
-    prediction_proba = model.predict_proba(input_df)[0]
-    classes = model.classes_
-    
-    st.success(f"🎉 예측된 붓꽃 품종은 **{prediction}** 입니다!")
-    
-    # 확률 바 차트
-    st.write("### 📊 품종별 예측 확률")
-    proba_df = pd.DataFrame({
-        '품종': classes,
-        '확률(%)': prediction_proba * 100
-    })
-    st.dataframe(proba_df.set_index('품종').T.style.format("{:.2f}%"))
-    
-    # 5. 가로축: 꽃잎 길이, 세로축: 꽃잎 너비 산점도 시각화 (노란색 별 표시)
-    st.write("### 🗺️ 데이터 분포 및 사용자 입력 위치 (⭐)")
-    st.write("전체 붓꽃 데이터 분포와 사용자가 입력한 값(노란색 별)의 위치를 비교합니다.")
-    
-    # 원본 데이터 시각화
-    fig = px.scatter(
-        df, 
-        x='꽃잎길이', 
-        y='꽃잎너비', 
-        color='품종',
-        title="꽃잎 길이 vs 꽃잎 너비 분포",
-        labels={'꽃잎길이': '꽃잎 길이 (cm)', '꽃잎너비': '꽃잎 너비 (cm)'},
-        opacity=0.7
-    )
-    
-    # 사용자가 입력한 위치를 노란색 큰 별(⭐)로 추가
-    user_point = pd.DataFrame({
-        '꽃잎길이': [petal_length],
-        '꽃잎너비': [petal_width],
-        '품종': [f"입력값 ({prediction})"]
-    })
-    
-    fig.add_scatter(
-        x=user_point['꽃잎길이'],
-        y=user_point['꽃잎너비'],
-        mode='markers',
-        marker=dict(size=20, color='gold', symbol='star', line=dict(width=1, color='black')),
-        name='사용자 입력 위치 (⭐)'
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
-
-# 부가 정보
-with st.expander("📁 원본 데이터셋 보기"):
-    st.dataframe(df)
